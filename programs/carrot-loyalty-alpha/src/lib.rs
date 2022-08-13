@@ -46,7 +46,7 @@ pub struct AddNewBrand<'info> {
     pub system_program: Program<'info, System>,
 }
 
-// 1. Defining the structure of tweet account
+// 1. Defining the structure of brand account
 #[account]
 pub struct Brand {
     pub consumer: Pubkey,
