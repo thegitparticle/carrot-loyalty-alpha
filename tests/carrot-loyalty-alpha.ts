@@ -8,9 +8,12 @@ describe("carrot-loyalty-alpha", () => {
 
   const program = anchor.workspace.CarrotLoyaltyAlpha as Program<CarrotLoyaltyAlpha>;
 
-  it("Is initialized!", async () => {
-    // Add your test here.
-    const tx = await program.methods.initialize().rpc();
-    console.log("Your transaction signature", tx);
-  });
+  it("can add a brand to a consumer", async () => {
+      // generate a keypair to act as new's brand account
+      const brand = anchor.web3.Keypair.generate();
+
+      // rpc call to the program
+      // await program.rpc.
+  })
+
 });

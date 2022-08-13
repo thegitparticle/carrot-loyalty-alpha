@@ -10,12 +10,18 @@ pub mod carrot_loyalty_alpha {
 
     pub fn add_brand(
         ctx: Context<AddNewBrand>,
+        brand_name: String,
         loyalty_score: u64,
         loyalty_level: u64,
     ) -> ProgramResult {
         let brand = &mut ctx.accounts.brand;
         let consumer = &mut ctx.accounts.consumer;
 
+        // if brand_name.chars().count() > 75 {
+        //     return err!(ErrorCode::BrandNameTooLong);
+        // }
+
+        brand.brand_name = brand_name;
         brand.loyalty_score = loyalty_score;
         brand.loyalty_level = loyalty_level;
         brand.consumer = *consumer.key;
@@ -33,7 +39,7 @@ pub enum ErrorCode {
 
 #[derive(Accounts)]
 pub struct AddNewBrand<'info> {
-    #[account(init, payer = author, space = Brand::LEN)]
+    #[account(init, payer = consumer, space = Brand::LEN)]
     pub brand: Account<'info, Brand>,
     #[account(mut)]
     pub consumer: Signer<'info>,
@@ -44,6 +50,7 @@ pub struct AddNewBrand<'info> {
 #[account]
 pub struct Brand {
     pub consumer: Pubkey,
+    pub brand_name: String,
     pub loyalty_score: u64,
     pub loyalty_level: u64,
 }
