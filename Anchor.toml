@@ -2,7 +2,7 @@
 seeds = false
 skip-lint = false
 [programs.localnet]
-carrot_loyalty_alpha = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+carrot_loyalty_alpha = "5jtwmP1bNjvEAu23qerh2WCzpULsqZJuGX5cFATbZBHS"
 
 [registry]
 url = "https://api.apr.dev"
