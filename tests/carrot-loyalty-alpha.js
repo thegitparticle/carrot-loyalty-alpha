@@ -9,6 +9,9 @@ describe("carrot-loyalty-alpha", () => {
 	const program = anchor.workspace.CarrotLoyaltyAlpha;
 
 	const brand = anchor.web3.Keypair.generate();
+	const consumer = anchor.web3.Keypair.generate();
+
+	const loyalty = anchor.web3.Keypair.generate();
 
 	it("creating a new brand account", async () => {
 		// generate a keypair to act as new's brand account
@@ -38,8 +41,6 @@ describe("carrot-loyalty-alpha", () => {
 
 	it("creating a new loyalty account", async () => {
 		// generate a keypair to act as new's consumer account
-		const consumer = anchor.web3.Keypair.generate();
-		const loyalty = anchor.web3.Keypair.generate();
 
 		const signature = await program.provider.connection.requestAirdrop(
 			consumer.publicKey,
@@ -47,12 +48,8 @@ describe("carrot-loyalty-alpha", () => {
 		);
 		await program.provider.connection.confirmTransaction(signature);
 
-		console.log("loyalty and bump found");
-
 		let score = new anchor.BN(711);
 		let level = new anchor.BN(3);
-
-		console.log("score and level converted to BigNumber");
 
 		await program.rpc.createLoyalty(
 			brand.publicKey,
@@ -69,18 +66,42 @@ describe("carrot-loyalty-alpha", () => {
 			}
 		);
 
-		console.log("rpc call sent out");
-
 		const loyaltyAccount = await program.account.loyalty.fetch(
 			loyalty.publicKey
 		);
-
-		console.log(loyaltyAccount);
 
 		assert.equal(
 			loyaltyAccount.brandAddress.toBase58(),
 			brand.publicKey.toBase58()
 		);
 		assert.equal(loyaltyAccount.brandName, "supreme");
+		console.log(loyaltyAccount.loyaltyScore.toNumber());
+		console.log(loyaltyAccount.loyaltyLevel.toNumber());
+	});
+
+	it("can fetch all loyalty accounts", async () => {
+		const allLoyaltyAccounts = await program.account.loyalty.all();
+		// assert.equal(allLoyaltyAccounts.length, 3);
+		console.log(allLoyaltyAccounts[0]);
+
+		const loyaltyAccountToEdit = allLoyaltyAccounts[0];
+
+		let scoreChange = new anchor.BN(1331);
+
+		await program.rpc.updateLoyalty(scoreChange, {
+			accounts: {
+				loyalty: loyaltyAccountToEdit.publicKey,
+				consumerAddress: loyaltyAccountToEdit.account.consumerAddress,
+			},
+			signers: [consumer],
+		});
+
+		console.log("rpc updateloyalty sent");
+
+		const allLoyaltyAccountsAgain = await program.account.loyalty.all();
+		// assert.equal(allLoyaltyAccounts.length, 3);
+		console.log(allLoyaltyAccountsAgain[0]);
+		console.log(allLoyaltyAccountsAgain[0].account.loyaltyScore.toNumber());
+		console.log(allLoyaltyAccountsAgain[0].account.loyaltyLevel.toNumber());
 	});
 });

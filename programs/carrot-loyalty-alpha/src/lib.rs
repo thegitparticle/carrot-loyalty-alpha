@@ -51,21 +51,21 @@ pub mod carrot_loyalty_alpha {
 
         if new_score < 144 {
             loyalty.loyalty_level = 1;
-        } else if new_score >= 233 {
+        } else if new_score >= 233 && new_score < 377 {
             loyalty.loyalty_level = 2;
-        } else if new_score >= 377 {
+        } else if new_score >= 377 && new_score < 610 {
             loyalty.loyalty_level = 3;
-        } else if new_score >= 610 {
+        } else if new_score >= 610 && new_score < 987 {
             loyalty.loyalty_level = 4;
-        } else if new_score >= 987 {
+        } else if new_score >= 987 && new_score < 1597 {
             loyalty.loyalty_level = 5;
-        } else if new_score >= 1597 {
+        } else if new_score >= 1597 && new_score < 2584 {
             loyalty.loyalty_level = 6;
-        } else if new_score >= 2584 {
+        } else if new_score >= 2584 && new_score < 4181 {
             loyalty.loyalty_level = 7;
-        } else if new_score >= 4181 {
+        } else if new_score >= 4181 && new_score < 6765 {
             loyalty.loyalty_level = 8;
-        } else if new_score >= 6765 {
+        } else if new_score >= 6765 && new_score < 10946 {
             loyalty.loyalty_level = 9;
         } else if new_score >= 10946 {
             loyalty.loyalty_level = 10;
