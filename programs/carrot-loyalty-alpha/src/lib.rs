@@ -30,16 +30,48 @@ pub mod carrot_loyalty_alpha {
         loyalty_level: u64,
     ) -> ProgramResult {
         let loyalty = &mut ctx.accounts.loyalty;
-        let authority_consumer = &mut ctx.accounts.authority_consumer;
-
-        // let brand_address = &mut ctx.accounts.brand_address;
-        // let consumer_address = &mut ctx.accounts.consumer_address;
+        let consumer_address = &mut ctx.accounts.consumer_address;
 
         loyalty.brand_address = brand_address;
-        loyalty.consumer_address = *authority_consumer.key;
+        loyalty.consumer_address = *consumer_address.key;
         loyalty.brand_name = brand_name;
         loyalty.loyalty_score = loyalty_score;
         loyalty.loyalty_level = loyalty_level;
+
+        Ok(())
+    }
+
+    pub fn update_loyalty(ctx: Context<UpdateLoyalty>, loyalty_score_change: u64) -> ProgramResult {
+        let loyalty = &mut ctx.accounts.loyalty;
+
+        let current_score = loyalty.loyalty_score;
+        let new_score = current_score + loyalty_score_change;
+
+        loyalty.loyalty_score = new_score;
+
+        if new_score < 144 {
+            loyalty.loyalty_level = 1;
+        } else if new_score >= 233 {
+            loyalty.loyalty_level = 2;
+        } else if new_score >= 377 {
+            loyalty.loyalty_level = 3;
+        } else if new_score >= 610 {
+            loyalty.loyalty_level = 4;
+        } else if new_score >= 987 {
+            loyalty.loyalty_level = 5;
+        } else if new_score >= 1597 {
+            loyalty.loyalty_level = 6;
+        } else if new_score >= 2584 {
+            loyalty.loyalty_level = 7;
+        } else if new_score >= 4181 {
+            loyalty.loyalty_level = 8;
+        } else if new_score >= 6765 {
+            loyalty.loyalty_level = 9;
+        } else if new_score >= 10946 {
+            loyalty.loyalty_level = 10;
+        } else {
+            loyalty.loyalty_level = 1
+        }
 
         Ok(())
     }
@@ -87,11 +119,18 @@ impl Brand {
 
 #[derive(Accounts)]
 pub struct CreateNewLoyalty<'info> {
-    #[account(init, payer = authority_consumer, space = Loyalty::LEN)]
+    #[account(init, payer = consumer_address, space = Loyalty::LEN)]
     pub loyalty: Account<'info, Loyalty>,
     #[account(mut)]
-    pub authority_consumer: Signer<'info>,
+    pub consumer_address: Signer<'info>,
     pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
+pub struct UpdateLoyalty<'info> {
+    #[account(mut, has_one = consumer_address)]
+    pub loyalty: Account<'info, Loyalty>,
+    pub consumer_address: Signer<'info>,
 }
 
 #[account]

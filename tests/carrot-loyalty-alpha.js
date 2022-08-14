@@ -62,7 +62,7 @@ describe("carrot-loyalty-alpha", () => {
 			{
 				accounts: {
 					loyalty: loyalty.publicKey,
-					authorityConsumer: consumer.publicKey,
+					consumerAddress: consumer.publicKey,
 					systemProgram: anchor.web3.SystemProgram.programId,
 				},
 				signers: [consumer, loyalty],
