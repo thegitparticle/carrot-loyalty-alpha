@@ -8,18 +8,17 @@ describe("carrot-loyalty-alpha", () => {
 
 	const program = anchor.workspace.CarrotLoyaltyAlpha;
 
-	it("can add a brand to a consumer", async () => {
+	it("creating a new brand account", async () => {
 		// generate a keypair to act as new's brand account
 		const brand = anchor.web3.Keypair.generate();
 
-		let score = new anchor.BN(711);
-		let level = new anchor.BN(3);
+		let brand_logo_sample =
+			"https://assets.supremenewyork.com/assets/logo-supreme-7fbf1f6597b0a6a686e03c82c29b8e7d.png";
 
-		// rpc call to the program
-		await program.rpc.addBrand("supreme", score, level, {
+		await program.rpc.createBrand("supreme", brand_logo_sample, {
 			accounts: {
 				brand: brand.publicKey,
-				consumer: program.provider.wallet.publicKey,
+				brandAddress: program.provider.wallet.publicKey,
 				systemProgram: anchor.web3.SystemProgram.programId,
 			},
 			signers: [brand],
@@ -27,8 +26,10 @@ describe("carrot-loyalty-alpha", () => {
 
 		const brandAccount = await program.account.brand.fetch(brand.publicKey);
 
+		console.log(brandAccount);
+
 		assert.equal(
-			brandAccount.consumer.toBase58(),
+			brandAccount.brandAddress.toBase58(),
 			program.provider.wallet.publicKey.toBase58()
 		);
 		assert.equal(brandAccount.brandName, "supreme");
