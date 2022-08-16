@@ -3,12 +3,14 @@ seeds = false
 skip-lint = false
 [programs.localnet]
 carrot_loyalty_alpha = "5jtwmP1bNjvEAu23qerh2WCzpULsqZJuGX5cFATbZBHS"
+[programs.devnet]
+carrot_loyalty_alpha = "5jtwmP1bNjvEAu23qerh2WCzpULsqZJuGX5cFATbZBHS"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "localnet"
+cluster = "devnet"
 wallet = "/Users/san/.config/solana/id.json"
 
 [scripts]
