@@ -19,11 +19,7 @@ describe("carrot-loyalty-alpha", () => {
 	const brand = anchor.web3.Keypair.generate();
 	const consumer = anchor.web3.Keypair.generate();
 
-	console.log(consumer.publicKey, consumer.privateKey);
-
 	const loyalty = anchor.web3.Keypair.generate();
-
-	/*
 
 	it("creating a new brand account", async () => {
 		// generate a keypair to act as new's brand account
@@ -31,14 +27,21 @@ describe("carrot-loyalty-alpha", () => {
 		let brand_logo_sample =
 			"https://assets.supremenewyork.com/assets/logo-supreme-7fbf1f6597b0a6a686e03c82c29b8e7d.png";
 
-		await program.rpc.createBrand("supreme", brand_logo_sample, {
-			accounts: {
-				brand: brand.publicKey,
-				brandAddress: program.provider.wallet.publicKey,
-				systemProgram: anchor.web3.SystemProgram.programId,
-			},
-			signers: [brand],
-		});
+		await program.rpc.createBrand(
+			"supreme",
+			brand_logo_sample,
+			brand_logo_sample,
+			brand_logo_sample,
+			brand_logo_sample,
+			{
+				accounts: {
+					brand: brand.publicKey,
+					brandAddress: program.provider.wallet.publicKey,
+					systemProgram: anchor.web3.SystemProgram.programId,
+				},
+				signers: [brand],
+			}
+		);
 
 		const brandAccount = await program.account.brand.fetch(brand.publicKey);
 
@@ -62,12 +65,14 @@ describe("carrot-loyalty-alpha", () => {
 
 		let score = new anchor.BN(711);
 		let level = new anchor.BN(3);
+		let minted = new anchor.BN(3);
 
 		await program.rpc.createLoyalty(
 			brand.publicKey,
 			"supreme",
 			score,
 			level,
+			minted,
 			{
 				accounts: {
 					loyalty: loyalty.publicKey,
@@ -91,7 +96,7 @@ describe("carrot-loyalty-alpha", () => {
 		// console.log(loyaltyAccount.loyaltyLevel.toNumber());
 	});
 
-	it("can fetch all loyalty accounts", async () => {
+	it("can fetch all loyalty accounts and update", async () => {
 		const allLoyaltyAccounts = await program.account.loyalty.all();
 		// assert.equal(allLoyaltyAccounts.length, 3);
 		// console.log(allLoyaltyAccounts[0]);
@@ -110,15 +115,22 @@ describe("carrot-loyalty-alpha", () => {
 
 		// console.log("rpc updateloyalty sent");
 
-		const allLoyaltyAccountsAgain = await program.account.loyalty.all();
+		const allLoyaltyAccountsAgain = await program.account.loyalty.all([
+			{
+				memcmp: {
+					offset: 8,
+					bytes: consumer.publicKey.toBase58(),
+				},
+			},
+		]);
+		console.log(allLoyaltyAccountsAgain);
 		// assert.equal(allLoyaltyAccounts.length, 3);
 		// console.log(allLoyaltyAccountsAgain[0]);
 		// console.log(allLoyaltyAccountsAgain[0].account.loyaltyScore.toNumber());
 		// console.log(allLoyaltyAccountsAgain[0].account.loyaltyLevel.toNumber());
 	});
 
-	*/
-
+	/*
 	it("mint the loyalty nft", async () => {
 		const TOKEN_METADATA_PROGRAM_ID = new anchor.web3.PublicKey(
 			"metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
@@ -232,4 +244,5 @@ describe("carrot-loyalty-alpha", () => {
 			}
 		);
 	});
+	*/
 });

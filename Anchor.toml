@@ -10,7 +10,7 @@ carrot_loyalty_alpha = "5jtwmP1bNjvEAu23qerh2WCzpULsqZJuGX5cFATbZBHS"
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "devnet"
+cluster = "localnet"
 wallet = "/Users/san/.config/solana/id.json"
 
 [scripts]
