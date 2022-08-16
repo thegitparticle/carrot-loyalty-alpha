@@ -16,6 +16,9 @@ pub mod carrot_loyalty_alpha {
         ctx: Context<EnrollNewBrand>,
         brand_name: String,
         logo_link: String,
+        level_1_link: String,
+        level_2_link: String,
+        level_3_link: String,
     ) -> ProgramResult {
         let brand = &mut ctx.accounts.brand;
         let brand_address = &mut ctx.accounts.brand_address;
@@ -23,6 +26,9 @@ pub mod carrot_loyalty_alpha {
         brand.brand_name = brand_name;
         brand.logo_link = logo_link;
         brand.brand_address = *brand_address.key;
+        brand.level_1_nft_link = level_1_link;
+        brand.level_2_nft_link = level_2_link;
+        brand.level_3_nft_link = level_3_link;
         Ok(())
     }
 
@@ -32,7 +38,7 @@ pub mod carrot_loyalty_alpha {
         brand_name: String,
         loyalty_score: u64,
         loyalty_level: u64,
-        // brand_details: Brand,
+        minted_level: u64,
     ) -> ProgramResult {
         let loyalty = &mut ctx.accounts.loyalty;
         let consumer_address = &mut ctx.accounts.consumer_address;
@@ -42,26 +48,7 @@ pub mod carrot_loyalty_alpha {
         loyalty.brand_name = brand_name;
         loyalty.loyalty_score = loyalty_score;
         loyalty.loyalty_level = loyalty_level;
-
-        // let mintNftContext: MintNFT = {};
-
-        // mint_nft(
-        //     { accounts: {
-        //         mintAuthority.publicKey,
-        //         mint: mintKey.publicKey,
-        //         tokenAccount: NftTokenAccount,
-        //         tokenProgram: TOKEN_PROGRAM_ID,
-        //         metadata: metadataAddress,
-        //         tokenMetadataProgram: TOKEN_METADATA_PROGRAM_ID,
-        //         payer: wallet.publicKey,
-        //         systemProgram: SystemProgram.programId,
-        //         rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-        //         masterEdition: masterEdition,
-        //       } },
-        //     *consumer_address.key,
-        //     brand_details.logo_link,
-        //     brand_name,
-        // );
+        loyalty.minted_level = minted_level;
 
         Ok(())
     }
@@ -208,8 +195,10 @@ const PUBLIC_KEY_LENGTH: usize = 32;
 const STRING_LENGTH_PREFIX: usize = 4; // Stores the size of the string.
 const MAX_BRAND_NAME_LENGTH: usize = 75 * 4; // 75 chars max.
 const MAX_LOGO_LINK_LENGTH: usize = 75 * 4; // 75 chars max.
+const MAX_NFT_LINK_LENGTH: usize = 75 * 4; // 75 chars max.
 const LOYALTY_SCORE_LENGTH: usize = 8;
 const LOYALTY_LEVEL_LENGTH: usize = 8;
+const MINTED_LEVEL_LENGTH: usize = 8;
 
 #[derive(Accounts)]
 pub struct EnrollNewBrand<'info> {
@@ -226,6 +215,9 @@ pub struct Brand {
     pub brand_address: Pubkey,
     pub brand_name: String,
     pub logo_link: String,
+    pub level_1_nft_link: String,
+    pub level_2_nft_link: String,
+    pub level_3_nft_link: String,
 }
 
 // implementation block for size calculation
@@ -233,7 +225,10 @@ impl Brand {
     const LEN: usize = DISCRIMINATOR_LENGTH
         + PUBLIC_KEY_LENGTH // Brand Address.
         + STRING_LENGTH_PREFIX + MAX_BRAND_NAME_LENGTH // brand name string
-        + STRING_LENGTH_PREFIX + MAX_LOGO_LINK_LENGTH;
+        + STRING_LENGTH_PREFIX + MAX_LOGO_LINK_LENGTH
+        + STRING_LENGTH_PREFIX + MAX_NFT_LINK_LENGTH
+        + STRING_LENGTH_PREFIX + MAX_NFT_LINK_LENGTH
+        + STRING_LENGTH_PREFIX + MAX_NFT_LINK_LENGTH;
 }
 
 #[derive(Accounts)]
@@ -259,6 +254,7 @@ pub struct Loyalty {
     pub brand_name: String,
     pub loyalty_score: u64,
     pub loyalty_level: u64,
+    pub minted_level: u64,
 }
 
 // implementation block for size calculation
@@ -268,7 +264,8 @@ impl Loyalty {
         + PUBLIC_KEY_LENGTH // Consumer address.
         + STRING_LENGTH_PREFIX + MAX_BRAND_NAME_LENGTH  // brand name string
         + LOYALTY_SCORE_LENGTH // loyalty score.
-        + LOYALTY_LEVEL_LENGTH; // loyalty level.
+        + LOYALTY_LEVEL_LENGTH // loyalty level.
+        + MINTED_LEVEL_LENGTH;
 }
 
 #[derive(Accounts)]
