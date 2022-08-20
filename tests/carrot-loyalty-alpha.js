@@ -21,6 +21,7 @@ describe("carrot-loyalty-alpha", () => {
 
 	const loyalty = anchor.web3.Keypair.generate();
 
+	/*
 	it("creating a new brand account", async () => {
 		// generate a keypair to act as new's brand account
 
@@ -129,8 +130,8 @@ describe("carrot-loyalty-alpha", () => {
 		// console.log(allLoyaltyAccountsAgain[0].account.loyaltyScore.toNumber());
 		// console.log(allLoyaltyAccountsAgain[0].account.loyaltyLevel.toNumber());
 	});
+	*/
 
-	/*
 	it("mint the loyalty nft", async () => {
 		const TOKEN_METADATA_PROGRAM_ID = new anchor.web3.PublicKey(
 			"metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
@@ -224,7 +225,7 @@ describe("carrot-loyalty-alpha", () => {
 		console.log("Metadata address: ", metadataAddress.toBase58());
 		console.log("MasterEdition: ", masterEdition.toBase58());
 
-		await program.rpc.mintNft(
+		const mintTx = await program.rpc.mintNft(
 			mintKey.publicKey,
 			"https://arweave.net/y5e5DJsiwH0s_ayfMwYk-SnrZtVZzHLQDSTZ5dNRUHA",
 			"Supreme NFT #1",
@@ -237,12 +238,14 @@ describe("carrot-loyalty-alpha", () => {
 					metadata: metadataAddress,
 					tokenMetadataProgram: TOKEN_METADATA_PROGRAM_ID,
 					payer: consumer.publicKey,
-					systemProgram: SystemProgram.programId,
+					systemProgram: anchor.web3.SystemProgram.programId,
 					rent: anchor.web3.SYSVAR_RENT_PUBKEY,
 					masterEdition: masterEdition,
 				},
+				signers: [mintKey],
 			}
 		);
+
+		console.log("Your transaction signature:", mintTx);
 	});
-	*/
 });
